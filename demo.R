@@ -27,9 +27,11 @@ get_links <- function(rel_link){
     html_element("title") %>% 
     html_text() %>% 
     str_remove(" - IMDb")
+  link <- rel_link
   return(list(title = title,
               link_count=count, 
-              rel_links=links))
+              rel_links=links,
+              link = link))
 }
 
 Dune2 <- get_links(strip_url(url))
@@ -39,3 +41,21 @@ out <- tibble(
   link_count = Dune2$link_count,
   links = Dune2$rel_links)
 
+tried_links <- out$links
+out2 <- lapply(tried_links, get_links)
+
+out3 <- tibble(
+  title = NULL,
+  link_count = NULL,
+  link = NULL
+)
+
+for(item in out2){
+  df <- data.frame(title = item$title,
+                   link_count = item$link_count,
+                   link = item$link)
+  out3 <- full_join(out3, df)
+}
+
+
+write_csv(out3, "challenge11_answer.csv")

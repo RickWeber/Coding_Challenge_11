@@ -45,10 +45,10 @@ nest_get <- function(rel_link){
 # the same for those links
 
 recursive_get <- function(link = "/wiki/Moth", levels = 0){
-  if(link == "" | link == "rand"){
-    page <- rand_page()
-    link <- sample(links(page),1)
-  }
+  # if(link == "" | link == "rand"){
+  #   page <- rand_page()
+  #   link <- sample(links(page),1)
+  # }
   out <- nest_get(link)
   tried_links <- c(link)
   while(levels >= 1){
