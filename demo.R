@@ -13,51 +13,59 @@ build_url <- function(rel_url){
   paste0("https://www.imdb.com", rel_url)
 }
 
-get_page <-function(link){
-  politely(read_html)(link)
+get_page <-function(url){
+  politely(read_html)(url)
 }
 
-get_links <- function(rel_link){
-  full_link <- paste0("https://www.imdb.com", rel_link)
-  page <- get_page(full_link)
-  links <- page %>% html_elements("a") %>% html_attr("href")
-  links <- links[str_detect(links, "^/title/tt")]
-  links <- sapply(links, strip_url)
+get_urls <- function(rel_url){
+  full_url <- build_url(rel_url)
+  page <- get_page(full_url)
+  urls <- page %>% html_elements("a") %>% html_attr("href")
+  url_titles <- page %>% html_elements("a") %>% html_text()
+  urls <- urls[str_detect(urls, "^/title/tt")]
+  url_titles <- url_titles[str_detect(urls, "^/title/tt")]
+  urls <- sapply(urls, strip_url)
   # strip names off vector
-  names(links) <- NULL
-  links <- unique(links)
-  count <- length(links)
+  names(urls) <- NULL
+  urls <- unique(urls)
+  url_titles <- unique(url_titles)
+  count <- length(urls)
   title <- page %>%
     html_element("title") %>% 
     html_text() %>% 
     str_remove(" - IMDb")
-  link <- rel_link
+  url <- rel_url
   return(data.frame(title = title,
-              link_count=count, 
-              rel_links=links,
-              link = link))
+              url_count=count, 
+              rel_urls=urls,
+              link_titles=url_titles,
+              url = url))
 }
 
-Dune2 <- get_links(strip_url(url))
+Dune2 <- get_urls(strip_url(url))
+
+# note to self: everything above works almost as expected.
+# todo: get rid of links to top 250 movies, press room, etc.
+# todo: get links to people (e.g. actors, directors)
 
 out <- tibble(
   title = Dune2$title,
-  link_count = Dune2$link_count,
-  links = Dune2$rel_links)
+  url_count = Dune2$url_count,
+  urls = Dune2$rel_urls)
 
-tried_links <- out$links
-out2 <- lapply(tried_links, get_links)
+tried_urls <- out$urls
+out2 <- lapply(tried_urls, get_urls)
 
 out3 <- tibble(
   title = NULL,
-  link_count = NULL,
-  link = NULL
+  url_count = NULL,
+  url = NULL
 )
 
 for(item in out2){
   df <- data.frame(title = item$title,
-                   link_count = item$link_count,
-                   link = item$link)
+                   url_count = item$url_count,
+                   url = item$url)
   out3 <- full_join(out3, df)
 }
 
