@@ -9,6 +9,10 @@ strip_url <- function(url){
   str_extract(url, "/title/tt[0-9]*/")
 }
 
+build_url <- function(rel_url){
+  paste0("https://www.imdb.com", rel_url)
+}
+
 get_page <-function(link){
   politely(read_html)(link)
 }
