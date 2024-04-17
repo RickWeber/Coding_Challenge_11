@@ -28,7 +28,7 @@ get_links <- function(rel_link){
     html_text() %>% 
     str_remove(" - IMDb")
   link <- rel_link
-  return(list(title = title,
+  return(data.frame(title = title,
               link_count=count, 
               rel_links=links,
               link = link))

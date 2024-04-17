@@ -68,6 +68,6 @@ recursive_get <- function(link = "/wiki/Moth", levels = 0){
 result0 <- recursive_get("/wiki/John_Candy", levels = 0)
 result1 <- recursive_get("/wiki/John_Candy", levels = 1)
 result2 <- recursive_get("/wiki/John_Candy", levels = 2)
-result3 <- recursive_get("/wiki/John_Candy", levels = 3)
+# result3 <- recursive_get("/wiki/John_Candy", levels = 3)
 
 result1 <- recursive_get("/wiki/Farmingdale_State_College", levels=1)
